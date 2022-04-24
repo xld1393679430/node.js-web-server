@@ -1,41 +1,54 @@
+const {
+  getList,
+  getDetail,
+  createBlog,
+  updateBlog,
+  deleteBlog,
+} = require("../controller/blog");
+const { SuccessModel, ErrorModel } = require("../model/resModel");
+
 const handleBolgRouter = (req, res) => {
-  const method = req.method;
-  const url = req.url;
-  const path = url.split("?")[0];
+  const { method, path } = req;
 
   // 获取博客列表
   if (method === "GET" && path === "/api/blog/list") {
-    return {
-      msg: "博客列表",
-    };
+    const { author, keyword } = req.query || {};
+    const list = getList(author, keyword);
+    return new SuccessModel(list);
   }
 
   // 获取博客详情
   if (method === "GET" && path === "/api/blog/detail") {
-    return {
-      msg: "博客详情",
-    };
+    const { id } = req.query || {};
+    const detail = getDetail(id);
+    return new SuccessModel(detail);
   }
 
   // 新建一篇博客
   if (method === "POST" && path === "/api/blog/new") {
-    return {
-      msg: "新建一篇博客",
-    };
+    const { body } = req;
+    const blog = createBlog(body);
+    return new SuccessModel(blog);
   }
 
   // 更新一篇博客
   if (method === "POST" && path === "/api/blog/update") {
-    return {
-      msg: "更新博客",
-    };
+    const { id, body } = req;
+    const flag = updateBlog(id, body);
+    if (flag) {
+      return new SuccessModel(flag);
+    }
+    return new ErrorModel("更新博客失败");
   }
 
   // 删除一篇博客
   if (method === "POST" && path === "/api/blog/delete") {
-    return {
-      msg: "删除博客",
-    };
+    const { id } = req;
+    const flag = deleteBlog(id);
+    if (flag) {
+      return new SuccessModel(flag, '删除成功');
+    }
+    return new ErrorModel("删除博客失败");
   }
 };
 
