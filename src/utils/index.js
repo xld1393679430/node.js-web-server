@@ -32,7 +32,24 @@ const setCookieExpires = () => {
   return d.toGMTString();
 };
 
+// 后端设置cookie
+// 注意：1,设置path=/, 2, httpOnly 表示只允许后端更改 不允许前端通过document.cookie去更改cookie
+const setCookie = (res, { username, userId }) => {
+  let customCookie = "";
+  if (username) {
+    customCookie += `username=${username};`;
+  } else if (userId) {
+    customCookie += `userid=${userId};`;
+  }
+  console.log(customCookie, '---customCookie')
+  res.setHeader(
+    "Set-Cookie",
+    `${customCookie} path=/; httpOnly; expires=${setCookieExpires()}`
+  );
+};
+
 module.exports = {
   hanldePostData,
   setCookieExpires,
+  setCookie,
 };

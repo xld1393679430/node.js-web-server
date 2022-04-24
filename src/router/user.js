@@ -1,6 +1,5 @@
 const { login } = require("../../src/controller/user");
 const { SuccessModel, ErrorModel } = require("../model/resModel");
-const { setCookieExpires } = require("../utils");
 
 const handleUserRouter = (req, res) => {
   const { method, path } = req;
@@ -10,18 +9,26 @@ const handleUserRouter = (req, res) => {
     const { username, password } = req.query;
     return login(username, password).then((data) => {
       if (data && data.username) {
-        // 后端设置cookie
-        // 注意：1,设置path=/, 2, httpOnly 表示只允许后端更改 不允许前端通过document.cookie去更改cookie
-        res.setHeader(
-          "Set-Cookie",
-          `username=${
-            data.username
-          }; path=/; httpOnly; expires=${setCookieExpires()}`
-        );
+        // 设置session
+        req.session.username = data.username;
+        req.session.realname = data.realname;
+        
         return new SuccessModel(true);
       }
       return new ErrorModel();
     });
+  }
+
+  // 测试登录接口
+  if (method === "GET" && path === "/api/user/login-test") {
+    if (req.session.username) {
+      return Promise.resolve(
+        new SuccessModel({
+          session: req.session,
+        })
+      );
+    }
+    return Promise.resolve(new ErrorModel());
   }
 };
 
