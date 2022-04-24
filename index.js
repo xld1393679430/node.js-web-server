@@ -1,3 +1,3 @@
 // const demo = require('./src/demo')
 
-const www = require('./src/bin/www')
+const www = require('./bin/www')
