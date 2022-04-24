@@ -4,7 +4,6 @@ const qs = require('querystring')
 const server = http.createServer((req, res) => {
     const { method, url,} = req
     const aa = url.split('?')
-    console.log(aa, '----aa')
     // const qurl = qs.parse(aa)
     // res.end(`hello world---${method}--${url}--${qurl}`)
 

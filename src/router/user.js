@@ -7,11 +7,12 @@ const handleUserRouter = (req, res) => {
   // 登录接口
   if (method === "POST" && path === "/api/user/login") {
     const { username, password } = req.body;
-    const isLogin = login(username, password);
-    if (isLogin) {
-      return new SuccessModel(isLogin);
-    }
-    return new ErrorModel();
+    return login(username, password).then((data) => {
+      if (data && data.username) {
+        return new SuccessModel(true);
+      }
+      return new ErrorModel();
+    });
   }
 };
 

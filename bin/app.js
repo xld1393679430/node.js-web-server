@@ -19,16 +19,20 @@ const serverHandle = (req, res) => {
     req.body = postData;
 
     // 处理博客路由
-    const blogData = handleBolgRouter(req, res);
-    if (blogData) {
-      res.end(JSON.stringify(blogData));
+    const blogRes = handleBolgRouter(req, res);
+    if (blogRes) {
+      blogRes.then((data) => {
+        res.end(JSON.stringify(data));
+      });
       return;
     }
 
     // 处理用户路由
-    const userData = handleUserRouter(req, res);
-    if (userData) {
-      res.end(JSON.stringify(userData));
+    const userRes = handleUserRouter(req, res);
+    if (userRes) {
+      userRes.then((data) => {
+        res.end(JSON.stringify(data));
+      });
       return;
     }
 

@@ -13,8 +13,6 @@ const server = http.createServer((req, res) => {
     });
 
     req.on("end", () => {
-      console.log(postData, "postData---");
-
       res.setHeader("Content-type", "application/json");
 
       const resData = {
