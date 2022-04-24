@@ -1,3 +1,5 @@
+const { SuccessModel, ErrorModel } = require("../model/resModel");
+
 const hanldePostData = (req) => {
   const promise = new Promise((resolve, rejecy) => {
     if (req.method !== "POST") {
@@ -41,15 +43,24 @@ const setCookie = (res, { username, userId }) => {
   } else if (userId) {
     customCookie += `userid=${userId};`;
   }
-  console.log(customCookie, '---customCookie')
   res.setHeader(
     "Set-Cookie",
     `${customCookie} path=/; httpOnly; expires=${setCookieExpires()}`
   );
 };
 
+// 统一的登录验证
+const logingCheck = (req) => {
+  if (!req.session.username) {
+    // return Promise.reject(new ErrorModel());
+    return false
+  }
+  return true
+};
+
 module.exports = {
   hanldePostData,
   setCookieExpires,
   setCookie,
+  logingCheck,
 };

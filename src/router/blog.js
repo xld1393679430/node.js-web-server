@@ -6,6 +6,7 @@ const {
   deleteBlog,
 } = require("../controller/blog");
 const { SuccessModel, ErrorModel } = require("../model/resModel");
+const { logingCheck } = require("../utils");
 
 const handleBolgRouter = (req, res) => {
   const { method, path } = req;
@@ -26,21 +27,29 @@ const handleBolgRouter = (req, res) => {
     });
   }
 
-  // 新建一篇博客
+  // 新建博客
   if (method === "POST" && path === "/api/blog/new") {
     const { body } = req;
+    const isLogin = logingCheck(req);
+    if (!isLogin) {
+      return new ErrorModel("请先去登录");
+    }
+    req.body.author = req.session.username;
     return createBlog(body).then((blog) => {
       return new SuccessModel(blog);
     });
   }
 
-  // 更新一篇博客
+  // 更新博客
   if (method === "POST" && path === "/api/blog/update") {
     const {
       query: { id },
       body,
     } = req;
-    
+    const isLogin = logingCheck(req);
+    if (!isLogin) {
+      return new ErrorModel("请先去登录");
+    }
     return updateBlog(id, body).then((flag) => {
       if (flag) {
         return new SuccessModel(flag);
@@ -49,9 +58,14 @@ const handleBolgRouter = (req, res) => {
     });
   }
 
-  // 删除一篇博客
+  // 删除博客
   if (method === "POST" && path === "/api/blog/delete") {
-    const { id, author } = req.query;
+    const { id } = req.query;
+    const isLogin = logingCheck(req);
+    if (!isLogin) {
+      return new ErrorModel("请先去登录");
+    }
+    const author = req.session.username;
     return deleteBlog(id, author).then((flag) => {
       if (flag) {
         return new SuccessModel(flag, "删除成功");
