@@ -14,6 +14,18 @@ const serverHandle = (req, res) => {
   // 解析query
   req.query = qs.parse(url.split("?")[1]);
 
+  // 处理cookie
+  req.cookie = {};
+  const cookieStr = req.headers.cookie || "";
+  cookieStr.split(";").forEach((item) => {
+    if (!item) {
+      return;
+    }
+    const key = item.slice(0, item.indexOf("=")).trim();
+    const value = item.slice(item.indexOf("=") + 1).trim();
+    req.cookie[key] = value;
+  });
+
   // 处理post数据
   hanldePostData(req).then((postData) => {
     req.body = postData;
